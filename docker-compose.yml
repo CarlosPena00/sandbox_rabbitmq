@@ -4,13 +4,25 @@ services:
     image: rabbitmq:3.9.3-management-alpine
     container_name: 'rabbitmq'
     ports:
-        - 5672:5672
-        - 15672:15672
+      - 5672:5672
+      - 15672:15672
     volumes:
-        - ./docker-conf/rabbitmq/data/:/rabbitmq/
-        - ./docker-conf/rabbitmq/log/:/rabbitmq
+      - ./docker-conf/rabbitmq/data/:/rabbitmq/
+      - ./docker-conf/rabbitmq/log/:/rabbitmq
     networks:
-        - rabbitmq_go_net
+      - rabbitmq_go_net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
+      interval: 5s
+      timeout: 2s
+      retries: 10
+
+  worker:
+    network_mode: 'host'
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    build: .
 
 networks:
   rabbitmq_go_net:

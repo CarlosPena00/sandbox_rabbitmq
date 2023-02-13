@@ -40,3 +40,4 @@ COPY setup.* /src/
 RUN pip install . --use-pep517 --no-deps
 COPY scripts /src/scripts
 
+CMD ["sh", "scripts/20_consumer.sh"]
